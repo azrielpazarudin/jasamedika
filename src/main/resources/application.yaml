@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/test_jasa_medika
+    username: postgres
+    password: Manhattan108
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  servlet :
+    multipart :
+      enabled : true
+      file-size-threshold : 2KB
+      max-file-size : 2MB
+      max-request-size : 2MB
+server:
+  port: 8081
+application:
+  security:
+    jwt:
+      secret-key: 586B633834416E396D7436753879382F423F4428482B4C6250655367566B5970
+      expiration: 900000 #  15 min in ms
+      refresh-token:
+        expiration: 1296000000 # 15 days in ms
+upload :
+  path : /home/azriel/kerja/storage
