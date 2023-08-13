@@ -42,6 +42,12 @@ public class PresensiController {
 
     }
 
+     @GetMapping("/daftar/pegawai")
+    public Object findAllByAdmin(Authentication auth,@RequestParam(name = "tglAwal") LocalDate tglAwal,@RequestParam(name = "tglAkhir")LocalDate tglAkhir){
+            return presensiService.presensiAbsenSendiri(auth,tglAwal, tglAkhir);
+
+    }
+
     @PostMapping
     public Object save(HttpServletRequest request, @RequestBody StatusAbsenRequest statusAbsenRequest) {
         if (request.isUserInRole("ROLE_ADMIN")) {

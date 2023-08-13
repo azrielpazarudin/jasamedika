@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.test.jasamedika.models.UserAbsensi;
 import com.test.jasamedika.payload.request.entity.PresensiAbsenRequest;
 import com.test.jasamedika.payload.response.entity.AdminPresensiResponse;
+import com.test.jasamedika.payload.response.entity.PegawaiPresensiSendiriResponse;
 import com.test.jasamedika.payload.response.entity.PresensiInResponse;
 import com.test.jasamedika.payload.response.entity.PresensiOutResponse;
 import com.test.jasamedika.repositories.StatusAbsenRepository;
@@ -69,6 +69,29 @@ public class PresensiService {
         userAbsensiRepository.save(userAbsensi);
         return ResponseEntity.ok().body("OK");
     }
+
+      public List<PegawaiPresensiSendiriResponse> presensiAbsenSendiri(Authentication authentication,LocalDate tglAwal,LocalDate tglAkhir) {
+        var user = userRepository.findByEmail(authentication.getName());
+        var userAbsensi = userAbsensiRepository.findBytanggalAbsensiBetween(tglAwal, tglAkhir);
+        List<UserAbsensi> ua = new ArrayList<>();
+        for (UserAbsensi x : userAbsensi) {
+            if (x.getUser().getEmail().equals(user.get().getEmail())) {
+                ua.add(x);
+            }
+        }
+        return ua.stream().map(this::mapToResponseSendiri).toList();
+       
+    }
+
+        private PegawaiPresensiSendiriResponse mapToResponseSendiri(UserAbsensi userAbsensi){
+            return PegawaiPresensiSendiriResponse.builder()
+            .namaLengkap(userAbsensi.getUser().getNamaLegkap())
+            .tglAbsensi(userAbsensi.getTanggalAbsensi().toString())
+            .jamMasuk(userAbsensi.getJamMasuk())
+            .jamKeluar(userAbsensi.getJamKeluar())
+            .namaStatus(userAbsensi.getStatusAbsensi().getNama()).build();
+        }
+
 
     private String setWaktu() {
         List<String> waktuStr = new ArrayList<>();
